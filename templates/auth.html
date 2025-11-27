@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HT Pro AI - Cánh cổng Tương lai</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+        :root {
+            --primary: #00f260;
+            --secondary: #0575e6;
+            --bg-dark: #050505;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- ANIMATED BACKGROUND --- */
+        #bg-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            width: 900px;
+            height: 600px;
+            max-width: 90%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            display: flex;
+            transition: 0.5s ease-in-out;
+        }
+
+        /* --- LEFT & RIGHT PANELS --- */
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        /* OVERLAY PANEL (Gradient Side) */
+        .overlay-container {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 50%; height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .overlay {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: -webkit-linear-gradient(to right, #0575e6, #00f260);
+            background: linear-gradient(to right, #0575e6, #00f260);
+            color: #fff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left { transform: translateX(-20%); }
+        .overlay-right { right: 0; transform: translateX(0); }
+
+        /* --- FORM STYLES --- */
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            padding: 0 50px;
+            background: transparent;
+        }
+
+        .sign-in-container { left: 0; width: 50%; z-index: 2; }
+        .sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; }
+
+        /* --- TYPOGRAPHY & INPUTS --- */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(0, 242, 96, 0.5);
+        }
+
+        .overlay h1 { text-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+
+        p { font-size: 1rem; line-height: 1.5; margin-bottom: 30px; color: var(--text-muted); font-weight: 500; }
+        .overlay p { color: #f0f0f0; }
+
+        .input-group {
+            position: relative; width: 100%; margin: 10px 0;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 15px 15px 15px 45px;
+            width: 100%;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 96, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .input-icon {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); transition: 0.3s;
+        }
+        input:focus + .input-icon { color: var(--primary); }
+
+        /* --- BUTTONS --- */
+        button {
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            background: transparent; /* Gradient border effect handled by hover */
+            color: var(--primary);
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: 0.3s;
+            cursor: pointer;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        button::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--primary); z-index: -1; transition: 0.3s;
+        }
+
+        button:hover { color: #000; box-shadow: 0 0 20px var(--primary); }
+        button:hover::before { width: 100%; }
+
+        button.ghost {
+            border-color: #fff; color: #fff;
+        }
+        button.ghost:hover { color: var(--secondary); box-shadow: 0 0 20px #fff; }
+        button.ghost::before { background: #fff; }
+
+        /* --- ANIMATION STATES (PC) --- */
+        .auth-container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; z-index: 1; }
+        .auth-container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; }
+        .auth-container.right-panel-active .overlay-container { transform: translateX(-100%); }
+        .auth-container.right-panel-active .overlay { transform: translateX(50%); }
+        .auth-container.right-panel-active .overlay-left { transform: translateX(0); }
+        .auth-container.right-panel-active .overlay-right { transform: translateX(20%); }
+
+        /* --- MOBILE RESPONSIVE --- */
+        .mobile-toggle { display: none; margin-top: 20px; color: var(--primary); cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .auth-container { width: 100%; height: 100vh; border-radius: 0; border: none; flex-direction: column; overflow-y: auto; }
+            .overlay-container { display: none; } /* Hide fancy overlay on mobile */
+            
+            .form-container { 
+                position: relative; width: 100%; height: auto; padding: 40px 20px; 
+                transform: none !important; opacity: 1 !important; display: none; /* Js will toggle block */
+            }
+            
+            .form-container.active { display: flex; animation: fadeIn 0.5s; }
+            
+            h1 { font-size: 2rem; }
+            .mobile-toggle { display: block; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="auth-container" id="container">
+        
+        <!-- FORM ĐĂNG KÝ -->
+        <div class="form-container sign-up-container" id="mobileSignUp">
+            <h1>Tạo tài khoản</h1>
+            <p>Bắt đầu hành trình AI của bạn ngay hôm nay</p>
+            
+            <div class="input-group">
+                <input type="text" id="r-fullname" placeholder="Họ và tên" required />
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            <div class="input-group">
+                <input type="email" id="r-email" placeholder="Email" required />
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+            <div class="input-group">
+                <input type="text" id="r-user" placeholder="Tên đăng nhập" required />
+                <i class="fas fa-id-badge input-icon"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="r-pass" placeholder="Mật khẩu" required />
+                <i class="fas fa-lock input-icon"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="r-confirm" placeholder="Nhập lại mật khẩu" required />
+                <i class="fas fa-check-circle input-icon"></i>
+            </div>
+
+            <button onclick="handleRegister()">Đăng Ký</button>
+            <div class="mobile-toggle" onclick="toggleMobile()">Đã có tài khoản? Đăng nhập</div>
+        </div>
+
+        <!-- FORM ĐĂNG NHẬP -->
+        <div class="form-container sign-in-container active" id="mobileSignIn">
+            <h1>Đăng nhập</h1>
+            <p>Chào mừng trở lại với HT Pro AI</p>
+            
+            <div class="input-group">
+                <input type="text" id="l-user" placeholder="Tên đăng nhập" required />
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="l-pass" placeholder="Mật khẩu" required />
+                <i class="fas fa-lock input-icon"></i>
+            </div>
+
+            <button onclick="handleLogin()">Truy Cập</button>
+            <div class="mobile-toggle" onclick="toggleMobile()">Chưa có tài khoản? Đăng ký</div>
+        </div>
+
+        <!-- OVERLAY (Chỉ hiện trên PC) -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Chào mừng trở lại!</h1>
+                    <p>Để duy trì kết nối, vui lòng đăng nhập bằng thông tin cá nhân của bạn</p>
+                    <button class="ghost" id="signIn">Đăng Nhập</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Xin chào, Bạn mới!</h1>
+                    <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
+                    <button class="ghost" id="signUp">Đăng Ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BACKGROUND PARTICLE SYSTEM ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1) - 0.5;
+                this.speedY = (Math.random() * 1) - 0.5;
+                this.color = Math.random() > 0.5 ? '#00f260' : '#0575e6';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 15000; // Mật độ hạt
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                // Nối các hạt gần nhau
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 - distance/1000})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // --- FORM LOGIC ---
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+        const mobileSignIn = document.getElementById('mobileSignIn');
+        const mobileSignUp = document.getElementById('mobileSignUp');
+
+        // PC Switch
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        // Mobile Switch
+        function toggleMobile() {
+            if (mobileSignIn.classList.contains('active')) {
+                mobileSignIn.classList.remove('active');
+                mobileSignUp.classList.add('active');
+            } else {
+                mobileSignUp.classList.remove('active');
+                mobileSignIn.classList.add('active');
+            }
+        }
+
+        // --- API HANDLERS ---
+        async function handleLogin() {
+            const u = document.getElementById('l-user').value;
+            const p = document.getElementById('l-pass').value;
+            if(!u || !p) return alert("Vui lòng nhập đủ thông tin");
+            
+            const btn = document.querySelector('#mobileSignIn button');
+            const orgText = btn.innerText;
+            btn.innerText = "Đang xử lý..."; btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                const d = await res.json();
+                if(d.success) window.location.href = '/app'; 
+                else { alert(d.message); btn.innerText = orgText; btn.disabled = false; }
+            } catch(e) { alert("Lỗi kết nối"); btn.innerText = orgText; btn.disabled = false; }
+        }
+
+        async function handleRegister() {
+            const data = {
+                fullname: document.getElementById('r-fullname').value,
+                email: document.getElementById('r-email').value,
+                username: document.getElementById('r-user').value,
+                password: document.getElementById('r-pass').value,
+                confirm_password: document.getElementById('r-confirm').value
+            };
+            
+            if(!data.username || !data.password) return alert("Thiếu thông tin");
+
+            const btn = document.querySelector('#mobileSignUp button');
+            const orgText = btn.innerText;
+            btn.innerText = "Đang đăng ký..."; btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const d = await res.json();
+                if(d.success) { 
+                    alert("Thành công! Hãy đăng nhập."); 
+                    if(window.innerWidth <= 768) toggleMobile(); else container.classList.remove("right-panel-active");
+                } else { alert(d.message); }
+            } catch(e) { alert("Lỗi kết nối"); }
+            btn.innerText = orgText; btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

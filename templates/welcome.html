@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport quan trọng cho mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HT Pro AI - Welcome</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Import Font INTER (Hỗ trợ Tiếng Việt tốt) và ORBITRON (Cho tiêu đề) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&display=swap');
+
+        :root {
+            --primary: #00f260;
+            --secondary: #0575e6;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif; /* Dùng Inter cho nội dung tiếng Việt */
+            background-color: var(--bg-dark);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- BACKGROUND CANVAS --- */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5%;
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 100; border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+        }
+
+        .logo { 
+            font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.5rem; 
+            display: flex; align-items: center; gap: 10px; color: white; text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 242, 96, 0.5);
+        }
+        .logo i { color: var(--primary); }
+
+        .nav-btn {
+            padding: 10px 20px; border-radius: 50px; text-decoration: none;
+            font-weight: 700; font-size: 0.9rem; transition: 0.3s;
+            font-family: 'Inter', sans-serif; /* Dùng Inter cho nút bấm */
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-login { color: #ccc; border: 1px solid transparent; }
+        .btn-login:hover { color: white; border-color: var(--border); }
+        
+        .btn-signup { 
+            background: transparent; color: var(--primary); 
+            border: 1px solid var(--primary); position: relative; overflow: hidden;
+            margin-left: 10px;
+        }
+        .btn-signup:hover { 
+            background: var(--primary); color: #000; 
+            box-shadow: 0 0 20px var(--primary); 
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh; /* Full màn hình */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 120px 20px 60px;
+            position: relative;
+        }
+
+        .badge {
+            background: rgba(0, 242, 96, 0.1); color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; font-weight: 700;
+            margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 242, 96, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem; line-height: 1.1; margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        /* Glitch Effect on Hover */
+        h1:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: var(--primary); -webkit-text-fill-color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem; color: #aaa;
+            max-width: 700px; margin-bottom: 50px;
+            font-weight: 400;
+        }
+
+        .btn-glow {
+            padding: 18px 50px; background: var(--primary); color: #000;
+            border-radius: 50px; font-weight: 800; text-decoration: none;
+            font-family: 'Orbitron', sans-serif; letter-spacing: 2px; text-transform: uppercase;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 10px;
+            box-shadow: 0 0 20px rgba(0, 242, 96, 0.4);
+        }
+        .btn-glow:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 40px rgba(0, 242, 96, 0.8); 
+            background: white;
+        }
+
+        /* --- FEATURES SECTION --- */
+        .features {
+            padding: 80px 5%;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 40px 30px; border-radius: 20px;
+            transition: 0.1s; /* Fast transition for tilt effect */
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d; /* For 3D Tilt */
+            opacity: 0; transform: translateY(50px); /* Init state for scroll reveal */
+        }
+        
+        .feature-card.visible {
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        /* Card Hover Glow */
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent);
+            opacity: 0; transition: 0.5s;
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-card:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(0,242,96,0.1); }
+
+        .icon-box {
+            width: 70px; height: 70px; border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; margin-bottom: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            transform: translateZ(20px); /* Pop out 3D */
+        }
+
+        .feature-card h3 { 
+            font-family: 'Orbitron', sans-serif; margin-bottom: 15px; 
+            font-size: 1.5rem; color: white; transform: translateZ(10px);
+        }
+        .feature-card p { 
+            color: #aaa; font-size: 1rem; line-height: 1.6; 
+            transform: translateZ(10px);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center; padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            color: #555; font-size: 0.9rem;
+            background: rgba(0,0,0,0.8);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .btn-login { display: none; } /* Ẩn nút Login để gọn */
+            
+            .hero { padding: 100px 20px 40px; min-height: auto; } /* Giảm padding */
+            h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1rem; margin-bottom: 30px; }
+            
+            .btn-glow { width: 100%; justify-content: center; padding: 15px; font-size: 1rem; }
+            
+            .features { grid-template-columns: 1fr; padding: 40px 20px; gap: 25px; }
+            .feature-card { padding: 30px 20px; transform: none !important; } /* Tắt Tilt trên mobile */
+            .icon-box { width: 60px; height: 60px; font-size: 1.5rem; }
+            .feature-card h3 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <a href="/" class="logo"><i class="fas fa-robot"></i> HT PRO AI</a>
+        <div>
+            <a href="/auth" class="nav-btn btn-login">Đăng nhập</a>
+            <a href="/auth" class="nav-btn btn-signup">Khởi động <i class="fas fa-power-off"></i></a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="badge">THỬ NGAY</div>
+        <h1>KHAI PHÁ<br><span style="color:var(--primary)">TRỢ LÝ AI TOÀN NĂNG</span></h1>
+        <p>
+            Trải nghiệm sức mạnh của HT PRO AI ngay tại đây.
+            <br>Viết code, phân tích ảnh và sáng tạo nội dung mọi lúc, mọi nơi.
+        </p>
+        <a href="/auth" class="btn-glow">
+            TRUY CẬP NGAY <i class="fas fa-arrow-right"></i>
+        </a>
+    </section>
+
+    <section class="features">
+        <!-- Feature 1 -->
+        <div class="feature-card tilt-card">
+            <div class="icon-box" style="color: #00f260; border-color: rgba(0, 242, 96, 0.3);">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3>Tốc Độ Ánh Sáng</h3>
+            <p>Sử dụng mô hình Fast Mode cho phản hồi tức thì. Không độ trễ, tối ưu hóa cho trải nghiệm mượt mà nhất.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card tilt-card">
+            <div class="icon-box" style="color: #0575e6; border-color: rgba(5, 117, 230, 0.3);">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3>Trí Tuệ Siêu Việt</h3>
+            <p>Super Mode với khả năng tư duy sâu. Giải quyết các bài toán lập trình phức tạp, viết văn và phân tích logic.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card tilt-card">
+            <div class="icon-box" style="color: #f472b6; border-color: rgba(244, 114, 182, 0.3);">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            <h3>Cá Nhân Hóa</h3>
+            <p>AI học hỏi thói quen của bạn. Tùy chỉnh "Persona" để AI đóng vai chuyên gia, giáo viên hay người bạn hài hước.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 HT Pro AI. Designed by <b>Hòa Quang Thắng</b>.</p>
+    </footer>
+
+    <script>
+        // --- 1. NEURAL NETWORK BACKGROUND ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255,255,255,0.1)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            let count = (canvas.width * canvas.height) / 15000; // Mật độ hạt
+            for(let i=0; i<count; i++) particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i=0; i<particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                for(let j=i; j<particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 150) {
+                        ctx.strokeStyle = `rgba(255,255,255,${0.05 - dist/3000})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles(); animateParticles();
+
+        // --- 2. 3D TILT EFFECT (JS thủ công, không cần thư viện) ---
+        const cards = document.querySelectorAll('.tilt-card');
+        
+        if(window.innerWidth > 768) { // Chỉ chạy trên PC
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Tính toán góc nghiêng
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        }
+
+        // --- 3. SCROLL REVEAL ANIMATION ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => observer.observe(card));
+
+    </script>
+</body>
+</html>

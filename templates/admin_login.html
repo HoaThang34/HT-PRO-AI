@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HT Pro AI - Admin Access</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+        body {
+            background-color: #050505; color: #ff4b4b;
+            font-family: 'Orbitron', sans-serif; height: 100vh;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .login-box {
+            width: 400px; padding: 40px; border: 1px solid #ff4b4b;
+            background: rgba(20, 0, 0, 0.8); box-shadow: 0 0 20px rgba(255, 75, 75, 0.2);
+            text-align: center; position: relative;
+        }
+        .login-box::before {
+            content: "RESTRICTED AREA"; position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%); background: #050505; padding: 0 10px;
+            color: #ff4b4b; letter-spacing: 2px; font-size: 0.8rem;
+        }
+        input {
+            width: 100%; padding: 15px; margin: 10px 0; background: transparent;
+            border: 1px solid #555; color: white; font-family: 'Orbitron';
+            outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: #ff4b4b; box-shadow: 0 0 10px rgba(255, 75, 75, 0.3); }
+        button {
+            width: 100%; padding: 15px; background: #ff4b4b; color: black;
+            border: none; font-weight: 900; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; margin-top: 20px; transition: 0.3s;
+        }
+        button:hover { background: white; box-shadow: 0 0 20px white; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1 style="margin-bottom: 30px;"><i class="fas fa-shield-alt"></i> SYSTEM CORE</h1>
+        <input type="text" id="admin-user" placeholder="PROTOCOL ID (Username)">
+        <input type="password" id="admin-pass" placeholder="ACCESS KEY (Password)">
+        <button onclick="adminLogin()">Authenticate</button>
+    </div>
+
+    <script>
+        async function adminLogin() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            const res = await fetch('/admin/auth', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: u, password: p})
+            });
+            const data = await res.json();
+            if (data.success) window.location.href = '/admin/dashboard';
+            else alert("ACCESS DENIED: " + data.message);
+        }
+    </script>
+</body>
+</html>
